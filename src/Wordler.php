@@ -6,4 +6,8 @@ namespace Ttskch\Wordler;
 
 final class Wordler
 {
+    public function run(): void
+    {
+        echo 'todo';
+    }
 }
