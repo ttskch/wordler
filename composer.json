@@ -59,7 +59,10 @@
             "@pcov",
             "@metrics"
         ],
-        "post-install-cmd": "@composer bin all install --ansi",
+        "post-install-cmd": [
+            "@composer bin all install --ansi",
+            "vendor/bin/bdi detect drivers"
+        ],
         "post-update-cmd": "@composer bin all update --ansi"
     },
     "scripts-descriptions": {
