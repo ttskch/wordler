@@ -36,14 +36,32 @@ final class Guesser
         'z' => 0.44,
     ];
 
-    public function __construct(private array $dictionary)
+    public function __construct(private CandidateProvider $candidateProvider)
     {
     }
 
-    public function guess(array $invalidWords = []): string
+    public function addInvalidWord(string $invalidWord): self
     {
-        // @todo
-        $candidates = array_values(array_filter($this->dictionary, static fn (string $word) => ! in_array($word, $invalidWords)));
+        $this->candidateProvider->addInvalidWord($invalidWord);
+
+        return $this;
+    }
+
+    public function getCandidates(): array
+    {
+        return $this->candidateProvider->getCandidates();
+    }
+
+    public function addHistory(string $word, array $states): self
+    {
+        $this->candidateProvider->addHistory($word, $states);
+
+        return $this;
+    }
+
+    public function guess(): string
+    {
+        $candidates = $this->candidateProvider->getCandidates();
 
         $primary = [
             'word' => null,

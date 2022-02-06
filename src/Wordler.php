@@ -9,18 +9,19 @@ use Symfony\Component\Panther\Client;
 
 final class Wordler
 {
-    private array $dictionary;
+    public const STATE_CORRECT = 'correct';
+    public const STATE_PRESENT = 'present';
+    public const STATE_ABSENT = 'absent';
 
-    public function __construct(private ?Guesser $guesser = null)
+    public function __construct(private ?Guesser $guesser = null, private ?CandidateProvider $candidateProvider = null)
     {
-        $this->dictionary = explode("\n", trim(file_get_contents(__DIR__ . '/../assets/dictionary.txt')));
-        $this->guesser = $this->guesser ?? new Guesser($this->dictionary);
+        $dictionary = explode("\n", trim(file_get_contents(__DIR__ . '/../assets/dictionary.txt')));
+        $this->candidateProvider = $candidateProvider ?? new CandidateProvider($dictionary);
+        $this->guesser = $guesser ?? new Guesser($this->candidateProvider);
     }
 
     public function run(): void
     {
-        $invalidWords = [];
-
         $client = Client::createChromeClient();
         $driver = $client->getWebDriver();
         $crawler = $client->request('GET', 'https://www.powerlanguage.co.uk/wordle/');
@@ -30,12 +31,12 @@ final class Wordler
 
         // try 6 times
         for ($i = 0; $i < 6; $i++) {
-            $candidate = $this->guesser->guess($invalidWords);
+            $candidate = $this->guesser->guess();
             $crawler->sendKeys($candidate)->sendKeys(WebDriverKeys::ENTER);
 
             echo sprintf("%d: Try \"%s\"\n", $i + 1, $candidate);
 
-            sleep(2);
+            sleep(3);
 
             // check states of 5 characters
             $states = [];
@@ -44,7 +45,7 @@ final class Wordler
 
                 // if candidate is not in word list of wordle, try again with other candidate
                 if ($state === 'tbd') {
-                    $invalidWords[] = $candidate;
+                    $this->guesser->addInvalidWord($candidate);
                     $crawler->sendKeys(array_fill(0, 5, WebDriverKeys::BACKSPACE)); // remove inputted word
                     $i--;
                     continue 2;
@@ -54,16 +55,20 @@ final class Wordler
             }
 
             $statesLabel = implode('', array_map(static fn (string $state) => match ($state) {
-                'correct' => '!',
-                'present' => '?',
-                'absent' => ' ',
+                self::STATE_CORRECT => '!',
+                self::STATE_PRESENT => '?',
+                self::STATE_ABSENT => '_',
             }, $states));
 
-            echo sprintf("Feedback: [%s]\n", $statesLabel);
+            echo sprintf("Feedback: %s\n", $statesLabel);
 
             $this->takeScreenshot($client);
 
-            $invalidWords[] = $candidate;
+            if (!in_array(self::STATE_PRESENT, $states) && !in_array(self::STATE_ABSENT, $states)) {
+                break;
+            }
+
+            $this->guesser->addHistory($candidate, $states);
         }
 
         sleep(5);
