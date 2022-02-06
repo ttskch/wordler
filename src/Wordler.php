@@ -22,8 +22,8 @@ final class Wordler
         $invalidWords = [];
 
         $client = Client::createChromeClient();
-        $crawler = $client->request('GET', 'https://www.powerlanguage.co.uk/wordle/');
         $driver = $client->getWebDriver();
+        $crawler = $client->request('GET', 'https://www.powerlanguage.co.uk/wordle/');
 
         // hide popup
         $crawler->filter('body')->click();
@@ -59,15 +59,37 @@ final class Wordler
                 'absent' => ' ',
             }, $states));
 
-            echo sprintf("Result: [%s]\n", $statesLabel);
+            echo sprintf("Feedback: [%s]\n", $statesLabel);
 
-            $client->takeScreenshot(sprintf(__DIR__ . '/../screenshots/%s.png', date('YmdHis')));
+            $this->takeScreenshot($client);
 
             $invalidWords[] = $candidate;
         }
 
         sleep(5);
 
+        // @todo
+        /*
+        // copy game result to clipboard
+        $driver->executeScript('document.querySelector("game-app").shadowRoot.querySelector("game-stats").shadowRoot.querySelector("button#share-button").click()'); // somehow this doesn't work and get toast message "Share failed" :(
+        sleep(1);
+
+        $this->takeScreenshot($client);
+
+        // paste game result to a textarea and get it
+        $crawler = $client->request('GET', 'https://getbootstrap.com/docs/5.1/forms/form-control/');
+        $textarea = $crawler->filter('textarea#exampleFormControlTextarea1');
+        $client->getKeyboard()->pressKey(WebDriverKeys::CONTROL)->sendKeys('v'); // paste from clipboard
+        $result = $textarea->text();
+
+        echo sprintf("%s\n", $result);
+        */
+
+        $this->takeScreenshot($client);
+    }
+
+    private function takeScreenshot(Client $client): void
+    {
         $client->takeScreenshot(sprintf(__DIR__ . '/../screenshots/%s.png', date('YmdHis')));
     }
 }
