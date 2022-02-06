@@ -34,7 +34,7 @@ final class Wordler
             $candidate = $this->guesser->guess();
             $crawler->sendKeys($candidate)->sendKeys(WebDriverKeys::ENTER);
 
-            echo sprintf("%d: Try \"%s\"\n", $i + 1, $candidate);
+            echo "{$candidate}\n";
 
             sleep(3);
 
@@ -55,12 +55,12 @@ final class Wordler
             }
 
             $statesLabel = implode('', array_map(static fn (string $state) => match ($state) {
-                self::STATE_CORRECT => '!',
-                self::STATE_PRESENT => '?',
-                self::STATE_ABSENT => '_',
+                self::STATE_CORRECT => '🟩',
+                self::STATE_PRESENT => '🟨',
+                self::STATE_ABSENT => '⬜',
             }, $states));
 
-            echo sprintf("Feedback: %s\n", $statesLabel);
+            echo "{$statesLabel}\n\n";
 
             $this->takeScreenshot($client);
 
@@ -71,10 +71,10 @@ final class Wordler
             $this->guesser->addHistory($candidate, $states);
         }
 
+        /*
         sleep(5);
 
         // @todo
-        /*
         // copy game result to clipboard
         $driver->executeScript('document.querySelector("game-app").shadowRoot.querySelector("game-stats").shadowRoot.querySelector("button#share-button").click()'); // somehow this doesn't work and get toast message "Share failed" :(
         sleep(1);
@@ -88,9 +88,9 @@ final class Wordler
         $result = $textarea->text();
 
         echo sprintf("%s\n", $result);
-        */
 
         $this->takeScreenshot($client);
+        */
     }
 
     private function takeScreenshot(Client $client): void
