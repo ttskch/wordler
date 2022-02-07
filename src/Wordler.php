@@ -29,6 +29,8 @@ final class Wordler
         // hide popup
         $crawler->filter('body')->click();
 
+        $sharingContent = '';
+
         // try 6 times
         for ($i = 0; $i < 6; $i++) {
             $candidate = $this->guesser->guess();
@@ -62,6 +64,8 @@ final class Wordler
 
             echo "{$statesLabel}\n\n";
 
+            $sharingContent .= "{$statesLabel}\n";
+
             $this->takeScreenshot($client);
 
             if (!in_array(self::STATE_PRESENT, $states) && !in_array(self::STATE_ABSENT, $states)) {
@@ -70,6 +74,11 @@ final class Wordler
 
             $this->guesser->addHistory($candidate, $states);
         }
+
+        $dayOffset = $driver->executeScript('return (new window.wordle.bundle.GameApp).dayOffset');
+        $sharingContent = sprintf("--\nWordle {$dayOffset} %s/6\n\n", $i + 1).$sharingContent;
+
+        echo "{$sharingContent}\n";
 
         /*
         sleep(5);
@@ -87,7 +96,7 @@ final class Wordler
         $client->getKeyboard()->pressKey(WebDriverKeys::CONTROL)->sendKeys('v'); // paste from clipboard
         $result = $textarea->text();
 
-        echo sprintf("%s\n", $result);
+        echo "{$result}\n";
 
         $this->takeScreenshot($client);
         */
