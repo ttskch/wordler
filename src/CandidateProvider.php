@@ -27,6 +27,7 @@ final class CandidateProvider
     {
         $characters = str_split($word);
 
+        // remove unmatched candidates
         foreach ($this->candidates as $i => $candidate) {
             $candidateCharacters = str_split($candidate);
 

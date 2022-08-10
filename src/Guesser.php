@@ -47,11 +47,6 @@ final class Guesser
         return $this;
     }
 
-    public function getCandidates(): array
-    {
-        return $this->candidateProvider->getCandidates();
-    }
-
     public function addHistory(string $word, array $states): self
     {
         $this->candidateProvider->addHistory($word, $states);
