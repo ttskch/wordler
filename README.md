@@ -16,8 +16,8 @@ $ composer install
 $ bin/wordler
 ```
 
-![](https://user-images.githubusercontent.com/4360663/152714778-9e859e51-ee5a-4ef3-a8c9-92dcd92cf9ea.gif)
+![](https://user-images.githubusercontent.com/4360663/183838989-6fc1db5e-7703-4e76-a8f5-663f0045b223.gif)
 
 After execution you can find screenshots at `screenshots/*.png` like following.
 
-![](https://user-images.githubusercontent.com/4360663/152688571-b4968a1d-5543-4ed2-a17b-4c7b84f8a3d9.png)
+![](https://user-images.githubusercontent.com/4360663/183835601-02e17563-2677-456b-8988-b2c493ee9e2c.png)
