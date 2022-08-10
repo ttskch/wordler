@@ -24,10 +24,10 @@ final class Wordler
     {
         $client = Client::createChromeClient();
         $driver = $client->getWebDriver();
-        $crawler = $client->request('GET', 'https://www.powerlanguage.co.uk/wordle/');
+        $crawler = $client->request('GET', 'https://www.nytimes.com/games/wordle/index.html');
 
         // hide popup
-        $crawler->filter('body')->click();
+        $client->getMouse()->clickTo('[class*="Modal-module_closeIcon"]');
 
         $sharingContent = '';
 
@@ -43,7 +43,7 @@ final class Wordler
             // check states of 5 characters
             $states = [];
             for ($j = 0; $j < 5; $j++) {
-                $state = $driver->executeScript(sprintf('return document.querySelector("game-app").shadowRoot.querySelector("game-row:nth-of-type(%d)").shadowRoot.querySelector("game-tile:nth-of-type(%d)").shadowRoot.querySelector(".tile").dataset.state', $i + 1, $j + 1));
+                $state = $driver->executeScript(sprintf('return document.querySelector("[class*=\'Row-module_row\']:nth-child(%d) > div:nth-child(%d) > div").dataset.state', $i + 1, $j + 1));
 
                 // if candidate is not in word list of wordle, try again with other candidate
                 if ($state === 'tbd') {
@@ -75,19 +75,23 @@ final class Wordler
             $this->guesser->addHistory($candidate, $states);
         }
 
-        $dayOffset = $driver->executeScript('return (new window.wordle.bundle.GameApp).dayOffset');
+        $dayOffset = (new \DateTime())->diff(new \DateTime('2021-06-19'))->days;
         $sharingContent = sprintf("--\nWordle {$dayOffset} %s/6\n\n", $i + 1).$sharingContent;
 
         echo "{$sharingContent}\n";
 
         /*
-        sleep(5);
-
         // @todo
-        // copy game result to clipboard
-        $driver->executeScript('document.querySelector("game-app").shadowRoot.querySelector("game-stats").shadowRoot.querySelector("button#share-button").click()'); // somehow this doesn't work and get toast message "Share failed" :(
-        sleep(1);
+        $client->waitFor('#share-button');
 
+        // copy game result to clipboard
+        // $driver->executeScript('document.querySelector("#share-button").click()'); // get toast message "Share failed"
+        // $client->getMouse()->clickTo('#share-button'); // get toast message "Share failed"
+        $client->getMouse()->mouseMoveTo('#share-button');
+        $client->getMouse()->mouseDownTo('#share-button');
+        $client->getMouse()->mouseUpTo('#share-button'); // get toast message "Share failed"
+
+        sleep(1);
         $this->takeScreenshot($client);
 
         // paste game result to a textarea and get it
@@ -97,8 +101,6 @@ final class Wordler
         $result = $textarea->text();
 
         echo "{$result}\n";
-
-        $this->takeScreenshot($client);
         */
     }
 
