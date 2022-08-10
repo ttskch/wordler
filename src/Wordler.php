@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Ttskch\Wordler;
 
+use Facebook\WebDriver\WebDriverBy;
+use Facebook\WebDriver\WebDriverDimension;
 use Facebook\WebDriver\WebDriverKeys;
 use Symfony\Component\Panther\Client;
 
@@ -22,7 +24,9 @@ final class Wordler
 
     public function run(): void
     {
-        $client = Client::createChromeClient();
+        // $client = Client::createChromeClient(); // somehow get toast message "Share failed" when click "Share" button after solved
+        $client = Client::createFirefoxClient();
+        $client->manage()->window()->setSize(new WebDriverDimension(1000, 1500));
         $driver = $client->getWebDriver();
         $crawler = $client->request('GET', 'https://www.nytimes.com/games/wordle/index.html');
 
@@ -75,33 +79,18 @@ final class Wordler
             $this->guesser->addHistory($candidate, $states);
         }
 
-        $dayOffset = (new \DateTime())->diff(new \DateTime('2021-06-19'))->days;
-        $sharingContent = sprintf("--\nWordle {$dayOffset} %s/6\n\n", $i + 1).$sharingContent;
-
-        echo "{$sharingContent}\n";
-
-        /*
-        // @todo
         $client->waitFor('#share-button');
 
         // copy game result to clipboard
-        // $driver->executeScript('document.querySelector("#share-button").click()'); // get toast message "Share failed"
-        // $client->getMouse()->clickTo('#share-button'); // get toast message "Share failed"
-        $client->getMouse()->mouseMoveTo('#share-button');
-        $client->getMouse()->mouseDownTo('#share-button');
-        $client->getMouse()->mouseUpTo('#share-button'); // get toast message "Share failed"
-
-        sleep(1);
-        $this->takeScreenshot($client);
+        $client->getMouse()->clickTo('#share-button');
 
         // paste game result to a textarea and get it
-        $crawler = $client->request('GET', 'https://getbootstrap.com/docs/5.1/forms/form-control/');
-        $textarea = $crawler->filter('textarea#exampleFormControlTextarea1');
-        $client->getKeyboard()->pressKey(WebDriverKeys::CONTROL)->sendKeys('v'); // paste from clipboard
-        $result = $textarea->text();
+        $client->request('GET', 'https://getbootstrap.com/docs/5.1/forms/form-control/');
+        $client->getMouse()->clickTo('textarea#exampleFormControlTextarea1'); // focus textarea
+        $client->getKeyboard()->pressKey(WebDriverKeys::COMMAND)->sendKeys('v')->releaseKey(WebDriverKeys::COMMAND); // paste from clipboard
+        $result = $client->findElement(WebDriverBy::id('exampleFormControlTextarea1'))->getAttribute('value'); // get value of textarea
 
-        echo "{$result}\n";
-        */
+        echo "--\n{$result}\n";
     }
 
     private function takeScreenshot(Client $client): void
