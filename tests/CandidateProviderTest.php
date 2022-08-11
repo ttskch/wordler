@@ -74,6 +74,22 @@ class CandidateProviderTest extends TestCase
                     'skirl',
                 ],
             ],
+            [
+                [
+                    'glean',
+                ],
+                'sense',
+                [
+                    Wordler::STATE_ABSENT,
+                    Wordler::STATE_PRESENT,
+                    Wordler::STATE_PRESENT,
+                    Wordler::STATE_ABSENT,
+                    Wordler::STATE_ABSENT,
+                ],
+                [
+                    'glean',
+                ],
+            ],
         ];
     }
 }
