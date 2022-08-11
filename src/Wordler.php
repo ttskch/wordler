@@ -80,7 +80,7 @@ final class Wordler
 
             $this->takeScreenshot($client);
 
-            if (!in_array(self::STATE_PRESENT, $states) && !in_array(self::STATE_ABSENT, $states)) {
+            if (!in_array(self::STATE_PRESENT, $states, true) && !in_array(self::STATE_ABSENT, $states, true)) {
                 break;
             }
 

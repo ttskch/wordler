@@ -38,12 +38,12 @@ final class CandidateProvider
                         break;
                     }
                 } elseif ($states[$j] === Wordler::STATE_PRESENT) {
-                    if ($characters[$j] === $candidateCharacters[$j] || !in_array($characters[$j], $candidateCharacters)) {
+                    if ($characters[$j] === $candidateCharacters[$j] || !in_array($characters[$j], $candidateCharacters, true)) {
                         unset($this->candidates[$i]);
                         break;
                     }
                 } else { // absent
-                    if (in_array($characters[$j], $candidateCharacters)) {
+                    if (in_array($characters[$j], $candidateCharacters, true)) {
                         // even if absent, it's allowed to exist "correct" or "present" position
                         for ($k = 0; $k < 5; $k++) {
                             if (in_array($states[$k], [Wordler::STATE_CORRECT, Wordler::STATE_PRESENT]) && $characters[$k] === $characters[$j]) {
