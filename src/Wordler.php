@@ -14,6 +14,7 @@ final class Wordler
     public const STATE_CORRECT = 'correct';
     public const STATE_PRESENT = 'present';
     public const STATE_ABSENT = 'absent';
+    public const STATE_IDLE = 'idle';
 
     public function __construct(private ?Guesser $guesser = null, private ?CandidateProvider $candidateProvider = null)
     {
@@ -50,7 +51,7 @@ final class Wordler
                 $state = $driver->executeScript(sprintf('return document.querySelector("[class*=\'Row-module_row\']:nth-child(%d) > div:nth-child(%d) > div").dataset.state', $i + 1, $j + 1));
 
                 // if candidate is not in word list of wordle, try again with other candidate
-                if ($state === 'tbd') {
+                if ($state === self::STATE_IDLE) {
                     $this->guesser->addInvalidWord($candidate);
                     $crawler->sendKeys(array_fill(0, 5, WebDriverKeys::BACKSPACE)); // remove inputted word
                     $i--;
