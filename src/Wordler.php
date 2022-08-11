@@ -20,8 +20,8 @@ final class Wordler
     public function __construct(private ?Guesser $guesser = null, private ?CandidateProvider $candidateProvider = null)
     {
         $dictionary = explode("\n", trim(file_get_contents(__DIR__ . '/../assets/dictionary.txt')));
-        $this->candidateProvider = $candidateProvider ?? new CandidateProvider($dictionary);
-        $this->guesser = $guesser ?? new Guesser($this->candidateProvider);
+        $this->candidateProvider ??= new CandidateProvider($dictionary);
+        $this->guesser ??= new Guesser($this->candidateProvider);
     }
 
     public function run(): void
