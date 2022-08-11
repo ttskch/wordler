@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Ttskch\Wordler;
 
-use Facebook\WebDriver\WebDriverBy;
 use Facebook\WebDriver\WebDriverDimension;
 use Facebook\WebDriver\WebDriverKeys;
 use Symfony\Component\Panther\Client;
@@ -92,7 +91,7 @@ final class Wordler
         $client->request('GET', 'https://getbootstrap.com/docs/5.1/forms/form-control/');
         $client->getMouse()->clickTo('textarea#exampleFormControlTextarea1'); // focus textarea
         $client->getKeyboard()->pressKey(WebDriverKeys::COMMAND)->sendKeys('v')->releaseKey(WebDriverKeys::COMMAND); // paste from clipboard
-        $result = $client->findElement(WebDriverBy::id('exampleFormControlTextarea1'))->getAttribute('value'); // get value of textarea
+        $result = $client->getCrawler()->filter('textarea#exampleFormControlTextarea1')->attr('value'); // get value of textarea
 
         echo "--\n{$result}\n";
     }
