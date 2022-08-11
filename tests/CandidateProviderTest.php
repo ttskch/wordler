@@ -8,59 +8,72 @@ use PHPUnit\Framework\TestCase;
 
 class CandidateProviderTest extends TestCase
 {
-    public function testAddHistory(): void
+    /**
+     * @dataProvider addHistoryDataProvider
+     */
+    public function testAddHistory(array $candidates, string $word, array $states, array $restCandidates): void
     {
-        $SUT = new CandidateProvider([
-            'skill',
-            'skimp',
-            'skint',
-            'skirl',
-            'skirt',
-            'skive',
-            'stair',
-            'swiss',
-            'slips',
-        ]);
+        $SUT = new CandidateProvider($candidates);
+        $SUT->addHistory($word, $states);
+        $this->assertEquals($restCandidates, $SUT->getCandidates());
+    }
 
-        $SUT->addHistory('sense', [
-            Wordler::STATE_CORRECT,
-            Wordler::STATE_ABSENT,
-            Wordler::STATE_ABSENT,
-            Wordler::STATE_ABSENT,
-            Wordler::STATE_ABSENT,
-        ]);
-
-        $this->assertEquals([
-            'skill',
-            'skimp',
-            'skirl',
-            'skirt',
-            'stair',
-            'swiss',
-            'slips',
-        ], $SUT->getCandidates());
-
-        $SUT = new CandidateProvider([
-            'skill',
-            'skimp',
-            'skirl',
-            'skirt',
-            'stair',
-            'swiss',
-            'slips',
-        ]);
-
-        $SUT->addHistory('sisal', [
-            Wordler::STATE_CORRECT,
-            Wordler::STATE_PRESENT,
-            Wordler::STATE_ABSENT,
-            Wordler::STATE_ABSENT,
-            Wordler::STATE_CORRECT,
-        ]);
-
-        $this->assertEquals([
-            'skill',
-            'skirl',
-        ], $SUT->getCandidates());
+    public function addHistoryDataProvider(): array
+    {
+        return [
+            [
+                [
+                    'skill',
+                    'skimp',
+                    'skint',
+                    'skirl',
+                    'skirt',
+                    'skive',
+                    'stair',
+                    'swiss',
+                    'slips',
+                ],
+                'sense',
+                [
+                    Wordler::STATE_CORRECT,
+                    Wordler::STATE_ABSENT,
+                    Wordler::STATE_ABSENT,
+                    Wordler::STATE_ABSENT,
+                    Wordler::STATE_ABSENT,
+                ],
+                [
+                    'skill',
+                    'skimp',
+                    'skirl',
+                    'skirt',
+                    'stair',
+                    'swiss',
+                    'slips',
+                ]
+            ],
+            [
+                [
+                    'skill',
+                    'skimp',
+                    'skirl',
+                    'skirt',
+                    'stair',
+                    'swiss',
+                    'slips',
+                ],
+                'sisal',
+                [
+                    Wordler::STATE_CORRECT,
+                    Wordler::STATE_PRESENT,
+                    Wordler::STATE_ABSENT,
+                    Wordler::STATE_ABSENT,
+                    Wordler::STATE_CORRECT,
+                ],
+                [
+                    'skill',
+                    'skirl',
+                ],
+            ],
+        ];
     }
 }
