@@ -46,7 +46,7 @@ final class CandidateProvider
                     if (in_array($characters[$j], $candidateCharacters, true)) {
                         // even if absent, it's allowed to exist "correct" or "present" position
                         for ($k = 0; $k < 5; $k++) {
-                            if (in_array($states[$k], [Wordler::STATE_CORRECT, Wordler::STATE_PRESENT]) && $characters[$k] === $characters[$j]) {
+                            if (in_array($states[$k], [Wordler::STATE_CORRECT, Wordler::STATE_PRESENT], true) && $characters[$k] === $characters[$j]) {
                                 continue 2;
                             }
                         }
