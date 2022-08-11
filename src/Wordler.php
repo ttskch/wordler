@@ -35,8 +35,6 @@ final class Wordler
         // hide popup
         $client->getMouse()->clickTo('[class*="Modal-module_closeIcon"]');
 
-        $sharingContent = '';
-
         // try 6 times
         for ($i = 0; $i < 6; $i++) {
             try {
@@ -75,8 +73,6 @@ final class Wordler
             }, $states));
 
             echo "{$statesLabel}\n\n";
-
-            $sharingContent .= "{$statesLabel}\n";
 
             $this->takeScreenshot($client);
 
