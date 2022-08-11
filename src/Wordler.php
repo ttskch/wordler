@@ -68,7 +68,7 @@ final class Wordler
                 $states[] = $state;
             }
 
-            $statesLabel = implode('', array_map(static fn (string $state) => match ($state) {
+            $statesLabel = implode('', array_map(fn (string $state) => match ($state) {
                 self::STATE_CORRECT => '🟩',
                 self::STATE_PRESENT => '🟨',
                 self::STATE_ABSENT => '⬜',
