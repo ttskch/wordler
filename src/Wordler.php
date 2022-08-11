@@ -74,7 +74,8 @@ final class Wordler
 
             $this->takeScreenshot($client);
 
-            if (!in_array(self::STATE_PRESENT, $states, true) && !in_array(self::STATE_ABSENT, $states, true)) {
+            // solved
+            if (array_unique($states) === [self::STATE_CORRECT]) {
                 break;
             }
 
