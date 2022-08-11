@@ -53,8 +53,13 @@ final class Guesser
 
         foreach ($candidates as $candidate) {
             $score = 0;
+            $usedCharacters = [];
             foreach (str_split($candidate) as $ch) {
-                $score += $this->characterScores[$ch];
+                // prefer word with no overlapping characters to get more information from feedback
+                if (!in_array($ch, $usedCharacters, true)) {
+                    $score += $this->characterScores[$ch];
+                    $usedCharacters[] = $ch;
+                }
             }
 
             if ($score > $primary['score']) {
