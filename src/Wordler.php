@@ -28,8 +28,7 @@ final class Wordler
         // $client = Client::createChromeClient(); // somehow get toast message "Share failed" when click "Share" button after solved
         $client = Client::createFirefoxClient();
         $client->manage()->window()->setSize(new WebDriverDimension(1000, 1500));
-        $driver = $client->getWebDriver();
-        $crawler = $client->request('GET', 'https://www.nytimes.com/games/wordle/index.html');
+        $client->request('GET', 'https://www.nytimes.com/games/wordle/index.html');
 
         // hide popup
         $client->getMouse()->clickTo('[class*="Modal-module_closeIcon"]');
@@ -43,7 +42,7 @@ final class Wordler
                 return;
             }
 
-            $crawler->sendKeys($candidate)->sendKeys(WebDriverKeys::ENTER);
+            $client->getCrawler()->sendKeys($candidate)->sendKeys(WebDriverKeys::ENTER);
 
             echo "{$candidate}\n";
 
@@ -52,12 +51,12 @@ final class Wordler
             // check states of 5 characters
             $states = [];
             for ($j = 0; $j < 5; $j++) {
-                $state = $driver->executeScript(sprintf('return document.querySelector("[class*=\'Row-module_row\']:nth-child(%d) > div:nth-child(%d) > div").dataset.state', $i + 1, $j + 1));
+                $state = $client->getWebDriver()->executeScript(sprintf('return document.querySelector("[class*=\'Row-module_row\']:nth-child(%d) > div:nth-child(%d) > div").dataset.state', $i + 1, $j + 1));
 
                 // if candidate is not in word list of wordle, try again with other candidate
                 if ($state === self::STATE_IDLE) {
                     $this->guesser->addInvalidWord($candidate);
-                    $crawler->sendKeys(array_fill(0, 5, WebDriverKeys::BACKSPACE)); // remove inputted word
+                    $client->getCrawler()->sendKeys(array_fill(0, 5, WebDriverKeys::BACKSPACE)); // remove inputted word
                     $i--;
                     continue 2;
                 }
