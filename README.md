@@ -1,6 +1,8 @@
 # Wordler
 
-A [Wordle](https://www.powerlanguage.co.uk/wordle/) solver implemented with [symfony/panther](https://github.com/symfony/panther).
+[![](https://github.com/ttskch/wordler/actions/workflows/ci.yaml/badge.svg?branch=main)](https://github.com/ttskch/wordler/actions/workflows/ci.yaml?query=branch:main)
+
+A [Wordle](https://www.nytimes.com/games/wordle/index.html) solver implemented with [symfony/panther](https://github.com/symfony/panther).
 
 ## Installation
 
