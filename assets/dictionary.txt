@@ -152,7 +152,6 @@ argon
 argot
 argue
 argus
-aries
 arise
 arith
 armed
