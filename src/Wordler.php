@@ -51,7 +51,7 @@ final class Wordler
             // check states of 5 characters
             $states = [];
             for ($j = 0; $j < 5; $j++) {
-                $state = $client->getWebDriver()->executeScript(sprintf('return document.querySelector("[class*=\'Row-module_row\']:nth-child(%d) > div:nth-child(%d) > div").dataset.state', $i + 1, $j + 1));
+                $state = $client->getCrawler()->filter(sprintf('[class*="Row-module_row"]:nth-child(%d) > div:nth-child(%d) > div', $i + 1, $j + 1))->attr('data-state');
 
                 // if candidate is not in word list of wordle, try again with other candidate
                 if ($state === self::STATE_TBD) {
