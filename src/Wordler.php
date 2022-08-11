@@ -20,7 +20,7 @@ final class Wordler
     {
         $dictionary = explode("\n", trim(file_get_contents(__DIR__ . '/../assets/dictionary.txt')));
         $this->candidateProvider ??= new CandidateProvider($dictionary);
-        $this->guesser ??= new Guesser($this->candidateProvider);
+        $this->guesser ??= new Guesser();
     }
 
     public function run(): void
@@ -36,7 +36,7 @@ final class Wordler
         // try 6 times
         for ($i = 0; $i < 6; $i++) {
             try {
-                $candidate = $this->guesser->guess();
+                $candidate = $this->guesser->guess($this->candidateProvider);
             } catch (NoMoreCandidatesException) {
                 echo "No more candidates in dictionary :(";
                 return;
@@ -55,7 +55,7 @@ final class Wordler
 
                 // if candidate is not in word list of wordle, try again with other candidate
                 if ($state === self::STATE_IDLE) {
-                    $this->guesser->addInvalidWord($candidate);
+                    $this->candidateProvider->remove($candidate);
                     $client->getCrawler()->sendKeys(array_fill(0, 5, WebDriverKeys::BACKSPACE)); // remove inputted word
                     $i--;
                     continue 2;
@@ -79,7 +79,7 @@ final class Wordler
                 break;
             }
 
-            $this->guesser->addHistory($candidate, $states);
+            $this->candidateProvider->applyFeedback($candidate, $states);
         }
 
         $client->waitFor('#share-button');

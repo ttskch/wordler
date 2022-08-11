@@ -10,7 +10,7 @@ final class CandidateProvider
 
     public function __construct(array $dictionary)
     {
-        $this->candidates = $dictionary;
+        $this->candidates = array_values($dictionary);
     }
 
     public function getCandidates(): array
@@ -18,12 +18,12 @@ final class CandidateProvider
         return $this->candidates;
     }
 
-    public function addInvalidWord(string $invalidWord): void
+    public function remove(string $invalidWord): void
     {
         $this->candidates = array_values(array_filter($this->candidates, fn (string $word) => $word !== $invalidWord));
     }
 
-    public function addHistory(string $word, array $states): void
+    public function applyFeedback(string $word, array $states): void
     {
         $characters = str_split($word);
 

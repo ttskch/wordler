@@ -14,7 +14,7 @@ class CandidateProviderTest extends TestCase
     public function testAddHistory(array $candidates, string $word, array $states, array $restCandidates): void
     {
         $SUT = new CandidateProvider($candidates);
-        $SUT->addHistory($word, $states);
+        $SUT->applyFeedback($word, $states);
         $this->assertEquals($restCandidates, $SUT->getCandidates());
     }
 

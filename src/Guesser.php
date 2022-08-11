@@ -38,27 +38,9 @@ final class Guesser
         'z' => 0.44,
     ];
 
-    public function __construct(private CandidateProvider $candidateProvider)
+    public function guess(CandidateProvider $candidateProvider): string
     {
-    }
-
-    public function addInvalidWord(string $invalidWord): self
-    {
-        $this->candidateProvider->addInvalidWord($invalidWord);
-
-        return $this;
-    }
-
-    public function addHistory(string $word, array $states): self
-    {
-        $this->candidateProvider->addHistory($word, $states);
-
-        return $this;
-    }
-
-    public function guess(): string
-    {
-        $candidates = $this->candidateProvider->getCandidates();
+        $candidates = $candidateProvider->getCandidates();
 
         if (count($candidates) === 0) {
             throw new NoMoreCandidatesException();
