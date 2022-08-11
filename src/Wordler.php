@@ -8,6 +8,7 @@ use Facebook\WebDriver\WebDriverBy;
 use Facebook\WebDriver\WebDriverDimension;
 use Facebook\WebDriver\WebDriverKeys;
 use Symfony\Component\Panther\Client;
+use Ttskch\Wordler\Exception\NoMoreCandidatesException;
 
 final class Wordler
 {
@@ -38,7 +39,13 @@ final class Wordler
 
         // try 6 times
         for ($i = 0; $i < 6; $i++) {
-            $candidate = $this->guesser->guess();
+            try {
+                $candidate = $this->guesser->guess();
+            } catch (NoMoreCandidatesException) {
+                echo "No more candidates in dictionary :(";
+                return;
+            }
+
             $crawler->sendKeys($candidate)->sendKeys(WebDriverKeys::ENTER);
 
             echo "{$candidate}\n";

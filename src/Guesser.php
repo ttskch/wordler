@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Ttskch\Wordler;
 
+use Ttskch\Wordler\Exception\NoMoreCandidatesException;
+
 final class Guesser
 {
     // @see https://en.wikipedia.org/wiki/Letter_frequency
@@ -57,6 +59,10 @@ final class Guesser
     public function guess(): string
     {
         $candidates = $this->candidateProvider->getCandidates();
+
+        if (count($candidates) === 0) {
+            throw new NoMoreCandidatesException();
+        }
 
         $primary = [
             'word' => null,
