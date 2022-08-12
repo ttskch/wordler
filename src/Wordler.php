@@ -93,7 +93,7 @@ final class Wordler
         $client->getKeyboard()->pressKey(WebDriverKeys::COMMAND)->sendKeys('v')->releaseKey(WebDriverKeys::COMMAND); // paste from clipboard
         $result = $client->getCrawler()->filter('textarea#exampleFormControlTextarea1')->attr('value'); // get value of textarea
 
-        echo "--\n{$result}\n";
+        echo "--\n{$result}\n\nvia https://github.com/ttskch/wordler\n";
     }
 
     private function takeScreenshot(Client $client): void
